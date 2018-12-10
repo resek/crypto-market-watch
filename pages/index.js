@@ -1,5 +1,8 @@
 import Layout from "../components/Layout";
 import axios from "axios";
+import getConfig from 'next/config';
+
+const {serverRuntimeConfig} = getConfig()
 
 export default class extends React.Component {
 
@@ -11,14 +14,9 @@ export default class extends React.Component {
         if(req) {
             const response = await axios({
                 method: 'GET',
-                url: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-                qs: {
-                    start: 1,
-                    limit: 500,
-                    convert: 'USD'
-                },
+                url: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
                 headers: {
-                    'X-CMC_PRO_API_KEY': 'e90e44fb-0f9c-43f2-8aa2-04b0b1435971'
+                    'X-CMC_PRO_API_KEY': serverRuntimeConfig.apiKey,
                 },
                 json: true,
                 gzip: true
@@ -34,6 +32,8 @@ export default class extends React.Component {
     }
     
     render() {
+
+        console.log(this.state.apiData)
 
         let workingData;
 
