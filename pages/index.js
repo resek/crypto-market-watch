@@ -1,56 +1,33 @@
 import Layout from "../components/Layout";
-import axios from "axios";
-import getConfig from 'next/config';
-
-const {serverRuntimeConfig} = getConfig()
+import { Provider } from 'mobx-react';
+import { getSnapshot } from 'mobx-state-tree';
+import { initStore } from '../models/CryptoStore';
+import CryptoList from "../components/CryptoList";
 
 export default class extends React.Component {
 
-    state = {
-        apiData: null,
-    }
-
-    static async getInitialProps({req}) {
+    static async getInitialProps({req}) { 
+        const isServer = !!req;
+        const store = initStore(isServer);
         if(req) {
-            const response = await axios({
-                method: 'GET',
-                url: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-                headers: {
-                    'X-CMC_PRO_API_KEY': serverRuntimeConfig.apiKey,
-                },
-                json: true,
-                gzip: true
-            })
-            return {ssrData: response.data}
-        } else {
-            return {}
-        }
+             await store.getApiData();
+        }  
+        return { initialState: getSnapshot(store), isServer }
     }
-
-    componentDidMount () {
-        this.setState({apiData: this.props.ssrData})
-    }
+    
+    constructor (props) {
+        super(props)
+        this.store = initStore(props.isServer, props.initialState)
+    }   
     
     render() {
 
-        console.log(this.state.apiData)
-
-        let workingData;
-
-        if (this.state.apiData == null) {
-            workingData = this.props.ssrData;
-        } else {
-            workingData = this.state.apiData;
-        }
-
         return (
-            <Layout>
-                <div>
-                    {workingData.data.map((currency, i) => (
-                       <p key={i}>{currency.name}</p>
-                   ))}
-                </div>
-            </Layout>
+            <Provider store={this.store}>
+                <Layout>
+                    <CryptoList />
+                </Layout>
+            </Provider>
         )
     }
 } 
