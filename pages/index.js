@@ -6,19 +6,20 @@ import CryptoList from "../components/CryptoList";
 
 export default class extends React.Component {
 
-    static async getInitialProps({req}) { 
-        const isServer = !!req;
-        const store = initStore(isServer);
-        if(req) {
-             await store.getApiData();
-        }  
-        return { initialState: getSnapshot(store), isServer }
+    static async getInitialProps({req}) {
+        if (req) {
+        const store = initStore();
+        await store.getApiData();
+        return { initialState: getSnapshot(store) }
+        } else {
+            return {}
+        }
     }
-    
+
     constructor (props) {
         super(props)
-        this.store = initStore(props.isServer, props.initialState)
-    }   
+        this.store = initStore(props.initialState)
+    }  
     
     render() {
 

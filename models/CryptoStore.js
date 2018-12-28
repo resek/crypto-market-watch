@@ -32,15 +32,12 @@ const CryptoStore = types
         }
     }));
 
-export function initStore (isServer, snapshot = null) {
-    if (isServer) {
-    	store = CryptoStore.create({ apiData: [] })
-    }
+export function initStore (snapshot = null) {
     if (store === null) {
-      	store = CryptoStore.create({ apiData: [] })
-    }
-    if (snapshot) {
-      	applySnapshot(store, snapshot)
+        store = CryptoStore.create({ apiData: [] })
+    } 
+    if (snapshot) {        
+        applySnapshot(store, snapshot)
     }
     return store
 }
