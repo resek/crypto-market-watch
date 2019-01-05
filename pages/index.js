@@ -9,6 +9,7 @@ export default class extends React.Component {
     static async getInitialProps({req}) {
         if (req) {
         const store = initStore();
+        await store.getExchangeRates();
         await store.getApiData();
         return { initialState: getSnapshot(store) }
         } else {
@@ -22,6 +23,8 @@ export default class extends React.Component {
     }  
     
     render() {
+
+        // console.log(this.store);
 
         return (
             <Provider store={this.store}>

@@ -1,9 +1,9 @@
 import { Fragment, Component } from "react";
 import { inject } from 'mobx-react';
 
-class CryptoList extends Component {
+class CryptoList extends Component {    
 
-    render () {
+    render () {    
         return (
             <Fragment>
                 {this.props.store.apiData.map((currency, i) => (
