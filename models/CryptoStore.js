@@ -41,7 +41,7 @@ const CryptoStore = types
         },
         saveData(response) {            
             response.map(currency => {
-                // console.log(currency);
+                // console.log(currency.quote);
                 const quote = currency.quote.EUR;                             
                 const object = {
                     id: currency.id,
@@ -57,6 +57,15 @@ const CryptoStore = types
                         change7d: quote.percent_change_7d,
                         volume24hEUR: quote.volume_24h,
                         marketCapEUR: quote.market_cap,
+                        priceUSD: quote.price * self.exchRateUSD,
+                        priceCNY: quote.price * self.exchRateCNY,
+                        priceBTC: quote.price * self.exchRateBTC,
+                        volume24hUSD: quote.volume_24h * self.exchRateUSD,
+                        volume24hCNY: quote.volume_24h * self.exchRateCNY,
+                        volume24hBTC: quote.volume_24h * self.exchRateBTC,
+                        marketCapUSD: quote.market_cap * self.exchRateUSD,
+                        marketCapCNY: quote.market_cap * self.exchRateCNY,
+                        marketCapBTC: quote.market_cap * self.exchRateBTC,
                     }
                 };                
                 self.apiData.push(object);
@@ -64,15 +73,29 @@ const CryptoStore = types
         }
     }));
 
-export function initStore (snapshot = null) {
-    store = CryptoStore.create({ 
-        apiData: [],
-        exchRateUSD: 0,
-        exchRateCNY: 0,
-        exchRateBTC: 0,
-    });
-    if (snapshot) {        
+export function initStore (isServer, snapshot = null) {
+    if (isServer) {
+        // console.log("isServer");
+        store = CryptoStore.create({ 
+            apiData: [],
+            exchRateUSD: 0,
+            exchRateCNY: 0,
+            exchRateBTC: 0,
+        });  
+    }
+    if (store === null) {
+        // console.log("null");
+        store = CryptoStore.create({ 
+            apiData: [],
+            exchRateUSD: 0,
+            exchRateCNY: 0,
+            exchRateBTC: 0,
+        });
+    }    
+    if (snapshot) {
+        // console.log("snapshot");       
         applySnapshot(store, snapshot)
     }
+    // console.log(store);
     return store
 }
