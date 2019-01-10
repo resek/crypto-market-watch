@@ -13,11 +13,13 @@ const CryptoStore = types
         exchRateUSD: types.number,
         exchRateCNY: types.number,
         exchRateBTC: types.number,
+        currency: types.string,
     })
     .actions(self => ({
         async getExchangeRates () {
-            const response = await axios.get("http://data.fixer.io/api/latest?access_key=a89d13826927735c041b40eb3d26a6de&symbols=CNY,USD,BTC&format=1");
-            self.saveRates(response.data.rates);
+            // const response = await axios.get("http://data.fixer.io/api/latest?access_key=a89d13826927735c041b40eb3d26a6de&symbols=CNY,USD,BTC&format=1");
+            const fakeData = { CNY: 7.82668, USD: 1.153476, BTC: 0.000303 };
+            self.saveRates(fakeData); //response.data.rates
         },
         async getApiData() {
             const response = await axios({
@@ -41,7 +43,6 @@ const CryptoStore = types
         },
         saveData(response) {            
             response.map(currency => {
-                // console.log(currency.quote);
                 const quote = currency.quote.EUR;                             
                 const object = {
                     id: currency.id,
@@ -50,52 +51,72 @@ const CryptoStore = types
                     rank: currency.cmc_rank,
                     totalSupply: currency.total_supply,
                     circulatingSupply: currency.circulating_supply,
-                    quote: {
-                        priceEUR: quote.price,
+                    quote: {                        
                         change1h: quote.percent_change_1h,
                         change24h: quote.percent_change_24h,
-                        change7d: quote.percent_change_7d,
-                        volume24hEUR: quote.volume_24h,
-                        marketCapEUR: quote.market_cap,
+                        change7d: quote.percent_change_7d,                      
+                        priceEUR: quote.price,
                         priceUSD: quote.price * self.exchRateUSD,
                         priceCNY: quote.price * self.exchRateCNY,
                         priceBTC: quote.price * self.exchRateBTC,
+                        volume24hEUR: quote.volume_24h,
                         volume24hUSD: quote.volume_24h * self.exchRateUSD,
                         volume24hCNY: quote.volume_24h * self.exchRateCNY,
-                        volume24hBTC: quote.volume_24h * self.exchRateBTC,
+                        marketCapEUR: quote.market_cap,
                         marketCapUSD: quote.market_cap * self.exchRateUSD,
                         marketCapCNY: quote.market_cap * self.exchRateCNY,
-                        marketCapBTC: quote.market_cap * self.exchRateBTC,
                     }
                 };                
                 self.apiData.push(object);
             })
+        },
+        changeCurrency(currency) {
+            self.currency = currency;
+        }
+    }))
+    .views(self => ({
+        priceDecimal(price) {
+            if (price >= 1) {
+                return price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else {
+                return price.toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 });
+            }
+        },
+        currencySymbol(currency) {
+            if (currency === "USD") {
+                return "$";
+            } if (currency === "EUR") {
+                return "€"
+            } else {
+                return "¥";
+            }
         }
     }));
 
 export function initStore (isServer, snapshot = null) {
+
+    let selectedCurrency = "USD";
+         
     if (isServer) {
-        // console.log("isServer");
         store = CryptoStore.create({ 
             apiData: [],
             exchRateUSD: 0,
             exchRateCNY: 0,
             exchRateBTC: 0,
+            currency: selectedCurrency,
         });  
     }
     if (store === null) {
-        // console.log("null");
         store = CryptoStore.create({ 
             apiData: [],
             exchRateUSD: 0,
             exchRateCNY: 0,
             exchRateBTC: 0,
+            currency: selectedCurrency,
         });
     }    
-    if (snapshot) {
-        // console.log("snapshot");       
+    if (snapshot) {       
         applySnapshot(store, snapshot)
     }
-    // console.log(store);
     return store
 }
