@@ -71,6 +71,9 @@ const CryptoStore = types
             })
         },
         changeCurrency(currency) {
+            const expiryDate = new Date();
+            expiryDate.setMonth(expiryDate.getMonth() + 1);
+            document.cookie = `currency=${currency}; expires=${expiryDate}, path=/`;
             self.currency = currency;
         }
     }))
@@ -93,9 +96,7 @@ const CryptoStore = types
         }
     }));
 
-export function initStore (isServer, snapshot = null) {
-
-    let selectedCurrency = "USD";
+export function initStore (isServer, snapshot = null, currency) {
          
     if (isServer) {
         store = CryptoStore.create({ 
@@ -103,7 +104,7 @@ export function initStore (isServer, snapshot = null) {
             exchRateUSD: 0,
             exchRateCNY: 0,
             exchRateBTC: 0,
-            currency: selectedCurrency,
+            currency: currency ? currency : "USD",
         });  
     }
     if (store === null) {
@@ -112,10 +113,10 @@ export function initStore (isServer, snapshot = null) {
             exchRateUSD: 0,
             exchRateCNY: 0,
             exchRateBTC: 0,
-            currency: selectedCurrency,
+            currency: "USD",
         });
     }    
-    if (snapshot) {       
+    if (snapshot) {      
         applySnapshot(store, snapshot)
     }
     return store
