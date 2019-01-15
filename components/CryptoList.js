@@ -2,7 +2,7 @@ import { Component } from "react";
 import {observer, inject} from "mobx-react";
 import Link from 'next/link';
 
-class CryptoList extends Component {
+class CryptoListComp extends Component {
     
     render () {
         
@@ -55,4 +55,5 @@ class CryptoList extends Component {
     }    
 }
 
-export default inject("store")(observer(CryptoList));
+export const CryptoList = inject("store")(observer(CryptoListComp));
+export const CryptoListTest = CryptoListComp;

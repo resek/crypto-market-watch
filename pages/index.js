@@ -3,7 +3,7 @@ import { getSnapshot } from 'mobx-state-tree';
 import Cookies from 'universal-cookie';
 import { initStore } from '../models/CryptoStore';
 import Layout from "../components/Layout";
-import CryptoList from "../components/CryptoList";
+import { CryptoList } from "../components/CryptoList";
 
 export default class extends React.Component {
 

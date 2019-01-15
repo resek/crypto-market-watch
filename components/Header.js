@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { inject } from 'mobx-react';
 
-const Header = (props) => (
+const HeaderComp = (props) => (
     <div>
         <Link href="/"><a>Home</a></Link>
         <button onClick={() => props.store.changeCurrency("USD")}>USD</button>
@@ -19,4 +19,5 @@ const Header = (props) => (
     </div>
 )
 
-export default inject("store")(Header);
+export const Header = inject("store")(HeaderComp);
+export const HeaderTest = HeaderComp;

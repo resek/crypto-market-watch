@@ -1,9 +1,6 @@
 import { types, applySnapshot } from 'mobx-state-tree';
 import axios from "axios";
-import getConfig from 'next/config';
 import ApiObjectStore from "./ApiObjectStore";
-
-const {serverRuntimeConfig} = getConfig()
 
 let store = null;
 
@@ -29,7 +26,7 @@ const CryptoStore = types
                     convert: "EUR",
                 },
                 headers: {
-                    'X-CMC_PRO_API_KEY': serverRuntimeConfig.apiKey,
+                    'X-CMC_PRO_API_KEY': "e90e44fb-0f9c-43f2-8aa2-04b0b1435971",
                 },
                 json: true,
                 gzip: true
@@ -73,7 +70,7 @@ const CryptoStore = types
         changeCurrency(currency) {
             const expiryDate = new Date();
             expiryDate.setMonth(expiryDate.getMonth() + 1);
-            document.cookie = `currency=${currency}; expires=${expiryDate}, path=/`;
+            document.cookie = `currency=${currency}; expires=${expiryDate}; path=/`;
             self.currency = currency;
         }
     }))
