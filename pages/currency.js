@@ -3,7 +3,7 @@ import { getSnapshot } from 'mobx-state-tree';
 import Cookies from 'universal-cookie';
 import { initStore } from '../models/CryptoStore';
 import Layout from "../components/Layout";
-import { CryptoList } from "../components/CryptoList";
+import CryptoDetails from "../components/CryptoDetails";
 
 export default class extends React.Component {
 
@@ -31,7 +31,7 @@ export default class extends React.Component {
         return (
             <Provider store={this.store}>
                 <Layout>
-                    <CryptoList />
+                    <CryptoDetails />
                 </Layout>
             </Provider>
         )
