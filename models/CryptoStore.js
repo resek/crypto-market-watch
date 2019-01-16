@@ -14,9 +14,9 @@ const CryptoStore = types
     })
     .actions(self => ({
         async getExchangeRates () {
-            // const response = await axios.get("http://data.fixer.io/api/latest?access_key=a89d13826927735c041b40eb3d26a6de&symbols=CNY,USD,BTC&format=1");
-            const fakeData = { CNY: 7.82668, USD: 1.153476, BTC: 0.000303 };
-            self.saveRates(fakeData); //response.data.rates
+            const response = await axios.get("http://data.fixer.io/api/latest?access_key=a89d13826927735c041b40eb3d26a6de&symbols=CNY,USD,BTC&format=1");
+            // const fakeData = { CNY: 7.82668, USD: 1.153476, BTC: 0.000303 };
+            self.saveRates(response.data.rates);
         },
         async getApiData() {
             const response = await axios({
